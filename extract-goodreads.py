@@ -6,6 +6,16 @@ import datetime
 
 # string constant
 NOT_SET_VALUE = 'NOT SET'
+DATA_DIR = 'data'
+
+def fix_book_json(book):
+    for key, value in book.items():
+        if isinstance(value, dict) and ('@type' in value):
+            if value['@type'] == 'integer':
+                book[key] = int(value['#text'])
+            else:
+                print(f"ERROR: missing converter for type: {value['@type']}")
+    return book
 
 config_parser = configparser.ConfigParser()
 config_parser.read('config.ini')
@@ -42,7 +52,7 @@ for shelf in shelves:
         reviews_objs.append(reviews_for_page)
     reviews = []
     for review_obj in reviews_objs:
-        review = { 'gid': review_obj.gid, 'book': review_obj.book, 'rating': review_obj.rating, 'shelves': review_obj.shelves, 'comments_count': review_obj.comments_count, 'owned': review_obj.owned, 'url': review_obj.url  }
+        review = { 'gid': review_obj.gid, 'book': fix_book_json(review_obj.book), 'rating': review_obj.rating, 'shelves': review_obj.shelves, 'comments_count': review_obj.comments_count, 'owned': review_obj.owned, 'url': review_obj.url  }
         if review_obj.recommended_for:
             review['recommended_for'] = review_obj.recommended_for
         if review_obj.recommended_by:
@@ -59,5 +69,5 @@ for shelf in shelves:
     return_value['shelves'].append(shelf_dict)
 
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-with open(f'goodreads-{today}.json', 'w') as f:
+with open( os.path.join(DATA_DIR, f'goodreads-{today}.json'), 'w') as f:
     json.dump(return_value, f, indent=2)
