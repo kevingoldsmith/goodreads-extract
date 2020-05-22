@@ -9,12 +9,26 @@ NOT_SET_VALUE = 'NOT SET'
 DATA_DIR = 'data'
 
 def fix_book_json(book):
+    keys_to_delete = []
     for key, value in book.items():
-        if isinstance(value, dict) and ('@type' in value):
-            if value['@type'] == 'integer':
-                book[key] = int(value['#text'])
-            else:
-                print(f"ERROR: missing converter for type: {value['@type']}")
+        if isinstance(value, dict):
+            if '@type' in value:
+                if value['@type'] == 'integer':
+                    book[key] = int(value['#text'])
+                else:
+                    print(f"ERROR: missing converter for type: {value['@type']}")
+            elif '@nophoto' in value:
+                book[key] = value['#text']
+            elif '@nil' in value:
+                keys_to_delete.append(key)
+        if key == 'authors':
+            if 'image_url' in value['author']:
+                value['author']['image_url'] = value['author']['image_url']['#text']
+            if 'small_image_url' in value['author']:
+                value['author']['small_image_url'] = value['author']['small_image_url']['#text']
+    for key in keys_to_delete:
+        del book[key]
+
     return book
 
 config_parser = configparser.ConfigParser()
