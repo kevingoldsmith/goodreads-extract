@@ -1,6 +1,6 @@
 backports-datetime-fromisoformat==1.0.0
 betterreads==0.4.2
-certifi==2020.4.5.1
+certifi==2022.12.7
 chardet==3.0.4
 idna==2.9
 rauth==0.7.3
