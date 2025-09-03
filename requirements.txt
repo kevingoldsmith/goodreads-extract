@@ -1,9 +1,9 @@
 backports-datetime-fromisoformat==1.0.0
 betterreads==0.4.2
-certifi==2020.4.5.1
+certifi==2023.7.22
 chardet==3.0.4
-idna==2.9
+idna==3.7
 rauth==0.7.3
-requests==2.23.0
-urllib3==1.26.5
+requests==2.32.4
+urllib3==2.5.0
 xmltodict==0.12.0
